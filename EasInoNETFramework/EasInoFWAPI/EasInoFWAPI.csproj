@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net472</TargetFramework>
+    <Deterministic>true</Deterministic>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <AssemblyName>EasInoAPI</AssemblyName>
+    <Version>1.0.0</Version>
+    <Authors>Frai13</Authors>
+    <Description>EasIno (https://github.com/Frai13/EasIno) is an Arduino Library that makes easier the communication between Arduino and other devices. The purpose of this API is to provide an easy way to use the EasIno protocol using C#</Description>
+    <PackageTags>Arduino communication</PackageTags>
+  </PropertyGroup>
+  
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="EasIno.cs" />
+    <Compile Include="Communication\SerialCom.cs" />
+    <Compile Include="Configuration\GenericConfiguration.cs" />
+    <Compile Include="Configuration\SerialComConfiguration.cs" />
+    <Compile Include="Core\Common.cs" />
+    <Compile Include="Core\DataCom.cs" />
+    <Compile Include="Events\DataReceived.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+</Project>

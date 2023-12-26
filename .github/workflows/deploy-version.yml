@@ -1,0 +1,69 @@
+name: New version deployment
+run-name: ${{ github.actor }} is deploying 🚀
+on:
+  push:
+    tags: [ '*' ]
+    
+permissions:
+      id-token: write
+      contents: write
+      checks: write
+
+jobs:
+  UnitTests:
+    uses: ./.github/workflows/unit-tests.yml
+  PublishLibraries:
+    runs-on: windows-latest
+    steps:
+      - run: echo "Triggered by a ${{ github.event_name }} event."
+      - run: echo "Running on ${{ runner.os }}"
+      - run: echo "Repository -> ${{ github.repository }}."
+      - name: Check out EasInoCSharpAPI code
+        uses: actions/checkout@v1
+      - run: echo "Cloned EasInoCSharpAPI."
+      - name: Clean
+        run: dotnet clean && dotnet nuget locals all --clear
+        shell: pwsh
+      - name: Restore dependencies
+        run: dotnet restore
+        shell: pwsh
+      - name: Build
+        run: dotnet build --configuration Release --no-restore
+        shell: pwsh
+      - name: Crate environment
+        run: |
+             mkdir results\NetCore6.0\
+             mkdir results\NetFramework472\
+        shell: pwsh
+      - name: Copy APIs dll
+        run: |
+             Copy-Item 'EasInoNETCore\EasInoNetCoreAPI\bin\Release\net6.0\EasInoAPI.dll' 'results\NetCore6.0\'
+             Copy-Item 'EasInoNETFramework\EasInoFWAPI\bin\Release\net472\EasInoAPI.dll' 'results\NetFramework472\'
+        shell: pwsh
+      - name: Copy dependecies
+        run: |
+             Copy-Item 'EasInoNETFramework\EasInoFWAPI\bin\Release\net472\Newtonsoft.Json.dll' 'results\NetFramework472\'
+        shell: pwsh
+      - name: Copy CLI binary
+        run: |
+             Copy-Item 'EasInoNETCore\EasInoNetCoreCLI\bin\Release\net6.0\EasInoCLI.exe' 'results\NetCore6.0\'
+             Copy-Item 'EasInoNETCore\EasInoNetCoreCLI\bin\Release\net6.0\EasInoCLI.dll' 'results\NetCore6.0\'
+             Copy-Item 'EasInoNETCore\EasInoNetCoreCLI\bin\Release\net6.0\EasInoCLI.runtimeconfig.json' 'results\NetCore6.0\'
+             Copy-Item 'EasInoNETFramework\EasInoFWCLI\bin\Release\net472\EasInoCLI.exe' 'results\NetFramework472\'
+        shell: pwsh
+      - name: Copy Examples binary
+        run: |
+             Copy-Item 'EasInoNETCore\EasInoNetCoreExamples\bin\Release\net6.0\EasInoExamples.exe' 'results\NetCore6.0\'
+             Copy-Item 'EasInoNETCore\EasInoNetCoreExamples\bin\Release\net6.0\EasInoExamples.dll' 'results\NetCore6.0\'
+             Copy-Item 'EasInoNETCore\EasInoNetCoreExamples\bin\Release\net6.0\EasInoExamples.runtimeconfig.json' 'results\NetCore6.0\'
+             Copy-Item 'EasInoNETFramework\EasInoFWExamples\bin\Release\net472\EasInoExamples.exe' 'results\NetFramework472\'
+        shell: pwsh
+      - name: ZIP results
+        run: Compress-Archive -Path results -DestinationPath Results.zip
+      - name: Upload results to release
+        uses: svenstaro/upload-release-action@v2
+        with:
+          file: Results.zip
+          asset_name: Results.zip
+          tag: ${{ github.ref }}
+          overwrite: true

@@ -1,0 +1,51 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net472</TargetFramework>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <Deterministic>true</Deterministic>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+    <EnableDefaultEmbeddedResourceItems>false</EnableDefaultEmbeddedResourceItems>
+    <AssemblyName>EasInoExamples</AssemblyName>
+    <OutputType>Exe</OutputType>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="Common.cs" />
+    <Compile Include="Examples\LedOnOffClient.cs" />
+    <Compile Include="Examples\LoopCommand.cs" />
+    <Compile Include="Examples\SendAndMonitor\ConfigurationWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Examples\SendAndMonitor\ConfigurationWindow.Designer.cs">
+      <DependentUpon>ConfigurationWindow.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Examples\SendAndMonitor\SendAndMonitor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Examples\SendAndMonitor\SendAndMonitor.Designer.cs">
+      <DependentUpon>SendAndMonitor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Program.cs" />
+    <Compile Include="Examples\SensorChangeReport.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\EasInoFWAPI\EasInoFWAPI.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Examples\SendAndMonitor\ConfigurationWindow.resx">
+      <DependentUpon>ConfigurationWindow.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Examples\SendAndMonitor\SendAndMonitor.resx">
+      <DependentUpon>SendAndMonitor.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Properties\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="System.Windows.Forms" />
+  </ItemGroup>
+</Project>
