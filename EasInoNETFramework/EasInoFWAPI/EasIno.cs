@@ -4,10 +4,12 @@ using System.Collections.Generic;
 using System.Data;
 using System.Diagnostics;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
+[assembly: InternalsVisibleTo("EasInoCLI"), InternalsVisibleTo("EasInoFWUnitTests")]
 namespace EasInoAPI
 {
     public abstract class EasIno
@@ -78,7 +80,7 @@ namespace EasInoAPI
                     receiveState = ReceiveState.IDLE;
                     throw new TimeoutException($"Timeout ({timeout}ms)");
                 }
-                Thread.Sleep(100);
+                Thread.Sleep(10);
             }
 
             receiveState = ReceiveState.IDLE;
@@ -118,7 +120,7 @@ namespace EasInoAPI
             }
             else
             {
-                _DataReceived.Invoke(new DataReceivedEventArgs(new DataCom(line)));
+                _DataReceived?.Invoke(new DataReceivedEventArgs(new DataCom(line)));
             }
         }
 

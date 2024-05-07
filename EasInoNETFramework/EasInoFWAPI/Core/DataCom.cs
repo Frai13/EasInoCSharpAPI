@@ -56,17 +56,52 @@ namespace EasInoAPI
             }
 
             string line_mod = line.Substring(headIndex + Head.Length, tailIndex - (headIndex + Head.Length));
-            line_mod = Regex.Replace(line_mod, $"{Separator}$", "");
+            line_mod = !line_mod.EndsWith($"{Separator}") ? line_mod : line_mod.Remove(line_mod.Length - 1);
 
             IEnumerable<string> groups = line_mod.Split(Separator);
 
             Operation = groups.ElementAt(0);
-            Args = groups.Skip(1);
+            Args = groups.Skip(1).ToList();
         }
 
         public override string ToString()
         {
-            return $"{Head}{Operation};{String.Join(Separator.ToString(), Args)};{Tail}";
+            if (Args.Count() > 0)
+            {
+                return $"{Head}{Operation};{String.Join(Separator.ToString(), Args)};{Tail}";
+            }
+            else
+            {
+                return $"{Head}{Operation};{Tail}";
+            }
+        }
+
+        public static bool operator ==(DataCom d1, DataCom d2)
+        {
+            if ((object)d1 == null)
+                return (object)d2 == null;
+
+            return d1.Equals(d2);
+        }
+
+        public static bool operator !=(DataCom d1, DataCom d2)
+        {
+            return !(d1 == d2);
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (obj == null || GetType() != obj.GetType())
+                return false;
+
+            var d2 = (DataCom)obj;
+            bool argsEqual = Args.Count() == d2.Args.Count() && (!Args.Except(d2.Args).Any() || !d2.Args.Except(Args).Any());
+            return (Operation == d2.Operation && argsEqual);
+        }
+
+        public override int GetHashCode()
+        {
+            return (Operation, Args).GetHashCode();
         }
     }
 }
