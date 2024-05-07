@@ -85,6 +85,28 @@ namespace EasInoAPI
             return data;
         }
 
+        /// <summary>
+        /// Sends and receives data through the active communication until a maximum of <see cref="Timeout"/> milliseconds
+        /// </summary>
+        /// <param name="data">Data to be sent</param>
+        /// <returns>Data received</returns>
+        public DataCom SendAndReceive(DataCom data)
+        {
+            Send(data);
+            return Receive(Timeout);
+        }
+
+        /// <summary>
+        /// Sends and receives data through the active communication until a maximum of <paramref name="timeout"/> milliseconds
+        /// </summary>
+        /// <param name="data">Data to be sent</param>
+        /// <returns>Data received</returns>
+        public DataCom SendAndReceive(DataCom data, int timeout)
+        {
+            Send(data);
+            return Receive(timeout);
+        }
+
         protected void InvokeDataReceived(string line)
         {
             if (receiveState == ReceiveState.WAITING)
