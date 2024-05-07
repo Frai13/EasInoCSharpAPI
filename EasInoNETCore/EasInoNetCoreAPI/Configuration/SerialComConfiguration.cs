@@ -129,7 +129,7 @@ namespace EasInoAPI.Configuration
             this.Timeout = Timeout;
         }
 
-        internal SerialComConfiguration(IEnumerable<string> args)
+        public SerialComConfiguration(IEnumerable<string> args)
         {
             this.ComType = CommunicationType.SERIAL;
 
