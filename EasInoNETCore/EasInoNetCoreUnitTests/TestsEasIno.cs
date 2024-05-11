@@ -35,6 +35,12 @@ namespace EasInoNetCoreUnitTests
         }
 
         [Test]
+        public void TestVersion()
+        {
+            Assert.That(EasIno.GetVersion() == "v1.0.1");
+        }
+
+        [Test]
         public void TestReceive()
         {
             Assert.Throws<TimeoutException>(() => { Receive(); });
