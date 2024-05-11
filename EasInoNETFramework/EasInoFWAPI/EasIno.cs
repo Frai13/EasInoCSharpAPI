@@ -68,6 +68,7 @@ namespace EasInoAPI
         /// <summary>
         /// Receives data through the active communication until a maximum of <paramref name="timeout"/> milliseconds
         /// </summary>
+        /// <param name="timeout">Milliseconds until timeout</param>
         /// <returns>Data received</returns>
         public DataCom Receive(int timeout)
         {
@@ -94,21 +95,61 @@ namespace EasInoAPI
         /// <returns>Data received</returns>
         public DataCom SendAndReceive(DataCom data)
         {
-            receiveState = ReceiveState.WAITING;
-            Send(data);
-            return Receive(Timeout);
+            return SendAndReceive(data, Timeout);
         }
 
         /// <summary>
         /// Sends and receives data through the active communication until a maximum of <paramref name="timeout"/> milliseconds
         /// </summary>
         /// <param name="data">Data to be sent</param>
+        /// <param name="timeout">Milliseconds until timeout</param>
         /// <returns>Data received</returns>
         public DataCom SendAndReceive(DataCom data, int timeout)
         {
             receiveState = ReceiveState.WAITING;
             Send(data);
             return Receive(timeout);
+        }
+
+        /// <summary>
+        /// Tries to send and receive data a maximum number of <paramref name="retries"/> through the active communication until a maximum of <see cref="Timeout"/> milliseconds
+        /// </summary>
+        /// <param name="data">Data to be sent</param>
+        /// <param name="retries">Maximum number of retries to receive</param>
+        /// <returns>Data received</returns>
+        public DataCom TrySendAndReceive(DataCom data, int retries)
+        {
+            return TrySendAndReceive(data, retries, Timeout);
+        }
+
+        /// <summary>
+        /// Tries to send and receive data a maximum number of <paramref name="retries"/> through the active communication until a maximum of <paramref name="timeout"/> milliseconds
+        /// </summary>
+        /// <param name="data">Data to be sent</param>
+        /// <param name="retries">Maximum number of retries to receive</param>
+        /// <param name="timeout">Milliseconds until timeout</param>
+        /// <returns>Data received</returns>
+        public DataCom TrySendAndReceive(DataCom data, int retries, int timeout)
+        {
+            int i = 0;
+            while (i < retries)
+            {
+                try
+                {
+                    receiveState = ReceiveState.WAITING;
+                    Send(data);
+                    return Receive(timeout);
+                }
+                catch (Exception)
+                {
+                    i++;
+                    if (i >= retries)
+                    {
+                        throw;
+                    }
+                }
+            }
+            return new DataCom();
         }
 
         protected void InvokeDataReceived(string line)
