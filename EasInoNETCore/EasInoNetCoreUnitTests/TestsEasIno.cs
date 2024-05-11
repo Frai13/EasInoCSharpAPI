@@ -10,9 +10,10 @@ namespace EasInoNetCoreUnitTests
     public class TestsEasIno : EasIno
     {
         private int TimeSend = 0;
-        private int MsgSent = 0;
+        private bool NotJoin = false;
         private DataCom dataCom = new DataCom() { Operation = "TEST" };
         private List<DataReceivedEventArgs> dataSubcribed = new List<DataReceivedEventArgs>();
+        private Thread t;
 
         public override int Timeout { get => timeout; set => timeout = value; }
         private int timeout = 100;
@@ -20,11 +21,11 @@ namespace EasInoNetCoreUnitTests
         public override void Stop() { }
         protected override void DerivedSend(string data)
         {
-            Thread t = new Thread(() =>
+            if (t != null && !NotJoin) t.Join();
+            t = new Thread(() =>
             {
                 Thread.Sleep(TimeSend);
                 InvokeDataReceived(data.ToString());
-                MsgSent++;
             });
             t.Start();
         }
@@ -50,19 +51,18 @@ namespace EasInoNetCoreUnitTests
             d = SendAndReceive(new DataCom());
             Assert.That(d == new DataCom());
             TimeSend = 150;
-            MsgSent = 0;
             Assert.Throws<TimeoutException>(() => { SendAndReceive(dataCom); });
-            while (MsgSent != 1) Thread.Sleep(10);
+            t.Join();
 
             TimeSend = 250;
-            MsgSent = 0;
+            NotJoin = true;
             d = TrySendAndReceive(dataCom, 3);
+            t.Join();
             Assert.That(d == dataCom);
-            while (MsgSent != 3) Thread.Sleep(10);
             TimeSend = 500;
-            MsgSent = 0;
             Assert.Throws<TimeoutException>(() => { TrySendAndReceive(dataCom, 3); });
-            while (MsgSent != 3) Thread.Sleep(10);
+            t.Join();
+            NotJoin = false;
         }
 
         [Test]
@@ -72,24 +72,20 @@ namespace EasInoNetCoreUnitTests
             DataReceived += TestsEasIno_DataReceived;
 
             TimeSend = 50;
-            MsgSent = 0;
             DataCom d = SendAndReceive(dataCom);
             Assert.That(d == dataCom);
-            while (MsgSent != 1) Thread.Sleep(10);
             Assert.That(dataSubcribed.Count() == 0);
 
-            MsgSent = 0;
             Send(dataCom);
-            while (MsgSent != 1) Thread.Sleep(10);
+            t.Join();
             Assert.That(dataSubcribed.Count() == 1);
             Assert.That(dataSubcribed.Last().Data == dataCom);
 
             dataSubcribed = new List<DataReceivedEventArgs>();
-            MsgSent = 0;
             Send(dataCom);
             Send(dataCom);
             Send(dataCom);
-            while (MsgSent != 3) Thread.Sleep(10);
+            t.Join();
             Assert.That(dataSubcribed.Count() == 3);
         }
 
