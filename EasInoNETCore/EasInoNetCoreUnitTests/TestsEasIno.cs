@@ -72,13 +72,15 @@ namespace EasInoNetCoreUnitTests
             DataReceived += TestsEasIno_DataReceived;
 
             TimeSend = 50;
+            MsgSent = 0;
             DataCom d = SendAndReceive(dataCom);
             Assert.That(d == dataCom);
-            Thread.Sleep(150);
+            while (MsgSent != 1) Thread.Sleep(10);
             Assert.That(dataSubcribed.Count() == 0);
 
+            MsgSent = 0;
             Send(dataCom);
-            Thread.Sleep(150);
+            while (MsgSent != 1) Thread.Sleep(10);
             Assert.That(dataSubcribed.Count() == 1);
             Assert.That(dataSubcribed.Last().Data == dataCom);
 
@@ -87,9 +89,8 @@ namespace EasInoNetCoreUnitTests
             Send(dataCom);
             Send(dataCom);
             Send(dataCom);
-            Thread.Sleep(150);
-            Assert.That(dataSubcribed.Count() == 3);
             while (MsgSent != 3) Thread.Sleep(10);
+            Assert.That(dataSubcribed.Count() == 3);
         }
 
         private void TestsEasIno_DataReceived(DataReceivedEventArgs args)
