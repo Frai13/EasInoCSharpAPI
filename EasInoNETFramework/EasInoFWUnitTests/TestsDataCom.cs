@@ -48,8 +48,8 @@ namespace EasInoFWUnitTests
             Assert.That(new DataCom("EINO::hello;world;::END").ToString() == "EINO::hello;world;::END");
             Assert.That(new DataCom("EINO::hello;;::END").ToString() == "EINO::hello;;::END");
 
-            Assert.That(new DataCom("").ToString() == "EINO::;;::END");
-            Assert.That(new DataCom("INO::hello;world;::END").ToString() == "EINO::;;::END");
+            Assert.That(new DataCom("").ToString() == "EINO::;::END");
+            Assert.That(new DataCom("INO::hello;world;::END").ToString() == "EINO::;::END");
         }
     }
 }

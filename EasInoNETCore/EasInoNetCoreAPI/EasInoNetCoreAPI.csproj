@@ -5,7 +5,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <AssemblyName>EasInoAPI</AssemblyName>
-    <Version>1.0.0</Version>
+    <Version>1.0.1</Version>
     <Authors>Frai13</Authors>
     <Description>EasIno (https://github.com/Frai13/EasIno) is an Arduino Library that makes easier the communication between Arduino and other devices. The purpose of this API is to provide an easy way to use the EasIno protocol using C#</Description>
     <PackageTags>Arduino communication</PackageTags>
